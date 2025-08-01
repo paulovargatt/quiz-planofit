@@ -279,7 +279,6 @@ export const PersonalizedMessageModern = ({ answers }) => {
     <div className="mx-auto max-w-[560px] px-4">
       <HeaderSection />
       <MainCardSection config={challengeConfig} />
-      <AttemptsSection type={attempts} />
       <BenefitsSection symptoms={symptoms} />
       
     </div>
