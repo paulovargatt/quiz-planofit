@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge.jsx'
 import { CheckCircle, Heart, Zap, Star, Clock, Shield, Gift } from 'lucide-react'
 import OfferSection from './components/OfferSection.jsx'
 import FBTracker from './lib/facebookTracker.js'
+import mixpanelTracker from './utils/mixpanelTracker.js'
 import './App.css'
 
 function App() {
@@ -15,7 +16,7 @@ function App() {
 
 
   useEffect(() => {
-    // Inicializa o tracker
+    // Inicializa o tracker do Facebook
     if (window.FBTrackerInit) return;
     FBTracker.init({
       pixels: [
@@ -28,6 +29,12 @@ function App() {
       collectGeolocation: true
     });
     window.FBTrackerInit = true;
+
+    // Inicializa o Mixpanel tracker
+    mixpanelTracker.init();
+    
+    // Track page view inicial
+    mixpanelTracker.trackPageView('Quiz - Início');
 
   }, []);
 
@@ -118,58 +125,77 @@ function App() {
       const newAnswers = currentAnswers.includes(answerId)
         ? currentAnswers.filter(id => id !== answerId)
         : [...currentAnswers, answerId]
+      
       const updatedAnswers = { ...answers, [questionId]: newAnswers }
       setAnswers(updatedAnswers)
       saveQuizState(currentStep, updatedAnswers, isLoading)
+      
+      // Track questão respondida
+      mixpanelTracker.trackQuestionAnswered(
+        questionId, 
+        answerId, 
+        currentStep + 1, 
+        questions.length, 
+        isMultiple
+      );
     } else {
       const updatedAnswers = { ...answers, [questionId]: answerId }
       setAnswers(updatedAnswers)
       saveQuizState(currentStep, updatedAnswers, isLoading)
-      setTimeout(() => {
-        nextStep()
-      }, 500)
+      
+      // Track questão respondida
+      mixpanelTracker.trackQuestionAnswered(
+        questionId, 
+        answerId, 
+        currentStep + 1, 
+        questions.length, 
+        isMultiple
+      );
+      
+      setTimeout(nextStep, 300)
     }
   }
 
   const nextStep = () => {
-    let newStep = currentStep
-    if (currentStep === 0) {
-      newStep = 1
-      setCurrentStep(1)
-    } else if (currentStep <= questions.length) {
-      if (currentStep === questions.length) {
-        startLoading()
-        return
-      } else {
-        newStep = currentStep + 1
-        setCurrentStep(newStep)
-      }
+    if (currentStep < questions.length) {
+      const newStep = currentStep + 1
+      setCurrentStep(newStep)
+      saveQuizState(newStep, answers, isLoading)
+      
+      // Track mudança de step
+      mixpanelTracker.trackStepChange(newStep, questions.length, 'next');
+    } else {
+      startLoading()
     }
-    saveQuizState(newStep, answers, isLoading)
   }
 
   const startLoading = () => {
     setIsLoading(true)
-    const newStep = questions.length + 1
-    setCurrentStep(newStep)
-    saveQuizState(newStep, answers, true)
-
-
+    saveQuizState(currentStep, answers, true)
+    setLoadingProgress(0)
+    
+    // Track conclusão do quiz
+    mixpanelTracker.track('Quiz Completed', {
+      total_questions: questions.length,
+      answers_given: Object.keys(answers).length
+    });
+    
     const interval = setInterval(() => {
       setLoadingProgress(prev => {
         if (prev >= 100) {
           clearInterval(interval)
+          setIsLoading(false)
+          saveQuizState(currentStep + 1, answers, false)
+          setCurrentStep(currentStep + 1)
+          
+          // Track chegada na página de venda
+          mixpanelTracker.trackOfferPageView();
+          
           return 100
         }
-        return prev + 2
+        return prev + Math.random() * 15
       })
-    }, 100)
-
-    setTimeout(() => {
-      clearInterval(interval)
-      setIsLoading(false)
-      saveQuizState(newStep, answers, false)
-    }, 5000)
+    }, 200)
   }
 
   const getCurrentQuestion = () => questions[currentStep - 1]
@@ -185,22 +211,23 @@ function App() {
   if (currentStep === 0) {
     return (
       <div className=" overflow-x-hidden min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-2xl text-center shadow-xl sm:shadow-2xl border-0 rounded-2xl backdrop-blur-sm">
-          <CardHeader className="pb-8">
+        <Card className="w-full max-w-2xl text-center shadow-xl
+         sm:shadow-2xl border-0 rounded-2xl backdrop-blur-sm">
+          <CardHeader className="pb-1">
 
             <img src="https://i.imgur.com/K4PzvmK.jpeg" className='w-60 h-60 mx-auto mb-6' alt="" />
             <CardTitle className="text-3xl sm:text-4xl font-bold
              tracking-tight bg-gradient-to-r from-orange-600
               to-pink-500 bg-clip-text text-transparent mb-2">
-              <b>Descubra:</b> Qual o Seu <span className="text-[#6b7280] "> Tipo Metabólico?</span>
+              Por que <span className="text-[#6b7280] "> você não consegue emagrecer?</span>
             </CardTitle>
 
-            <span className="font-semibold text-base text-lg sm:text-lg text-gray-800">E como saber se ele está ativo...</span>
+            <span className="font-semibold text-base text-lg sm:text-lg text-red-600">Descubra qual erro está sabotando seus resultados</span>
             {/* <p className="mt-3 text-sm sm:text-base text-gray-700 leading-relaxed">
               Responda <span className="font-semibold text-pink-600">essas perguntas rápidas</span> e receba seu
               <span className="font-semibold text-purple-600"> diagnóstico personalizado</span>.
             </p> */}
-            <div className="flex items-center justify-center gap-2 mt-4 text-gray-600">
+            <div className="flex items-center justify-center gap-2 mt-2 text-gray-600">
               <Clock className="w-5 h-5" />
               <span className="font-medium">Leva menos de 2 minutos</span>
             </div>
