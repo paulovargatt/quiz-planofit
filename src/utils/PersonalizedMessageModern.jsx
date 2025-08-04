@@ -18,9 +18,10 @@ import {
 const CHALLENGE_CONFIG = {
   restrictive_diets: {
     icon: RotateCcw,
-    headline: 'Ciclo de Dietas Restritivas',
-    problem: 'Seu corpo entra em "modo economia" e você recupera tudo depois.',
-    solution: 'PlanoFit calcula suas calorias exatas sem passar fome.',
+    headline: 'Ciclo Vicioso das Dietas',
+    problem: 'Você faz dieta → perde peso → para a dieta → engorda tudo de volta (e ainda ganha uns quilos extras). Seu corpo entra em "modo sobrevivência" e fica cada vez mais difícil emagrecer.',
+    bridge: 'O problema não é sua força de vontade. É que ninguém te ensinou o BÁSICO: quantas calorias SEU corpo precisa para emagrecer SEM passar fome.',
+    solution: 'A PlanoFit calcula suas calorias exatas e divide nas suas refeições. Você emagrece comendo NORMAL, sem cortar nada drasticamente. E ainda conta com um assistente IA que te ajuda no dia a dia.',
     gradient: 'from-rose-500/10 to-pink-500/5',
     borderColor: 'border-rose-200/50',
     iconBg: 'from-rose-500 to-pink-600',
@@ -28,9 +29,10 @@ const CHALLENGE_CONFIG = {
   },
   no_time: {
     icon: Clock,
-    headline: 'Falta de Tempo',
-    problem: 'Na correria, você come qualquer coisa e perde o controle.',
-    solution: 'IA planeja tudo em segundos + registro por foto.',
+    headline: 'Caos da Correria',
+    problem: 'De manhã: café com pão. No trabalho: qualquer coisa. À noite: delivery ou sobras da geladeira. Você não planeja, só "vai levando" - e a balança vai subindo.',
+    bridge: 'Você precisa de um app que te ajude. Que calcule tudo, planeje tudo, e você só execute.',
+    solution: 'Nossa IA planeja suas refeições em 10 segundos. Tirou foto do prato? Ela registra automaticamente. Zero esforço mental, resultados garantidos.',
     gradient: 'from-amber-500/10 to-orange-500/5',
     borderColor: 'border-amber-200/50',
     iconBg: 'from-amber-500 to-orange-600',
@@ -38,9 +40,10 @@ const CHALLENGE_CONFIG = {
   },
   confusion: {
     icon: HelpCircle,
-    headline: 'Informação Demais',
-    problem: 'Cada "expert" fala algo e você não sabe o que seguir.',
-    solution: 'Assistente IA te diz exatamente o que comer.',
+    headline: 'Paralisia da Informação',
+    problem: 'Instagram diz uma coisa, YouTube outra, sua amiga fala diferente. Corta carbo? Come carbo? Jejum? Exercício? Você fica perdida e não faz NADA direito.',
+    bridge: 'Você não precisa ser expert em nutrição. Precisa de algo que te diga exatamente o que fazer.',
+    solution: 'Nosso Assistente IA é como ter uma nutricionista 24h. Pergunta, ele responde. Tem dúvida, ele esclarece. Sem confusão, só resultados. ',  
     gradient: 'from-violet-500/10 to-purple-500/5',
     borderColor: 'border-violet-200/50',
     iconBg: 'from-violet-500 to-purple-600',
@@ -48,9 +51,10 @@ const CHALLENGE_CONFIG = {
   },
   emotional_eating: {
     icon: Heart,
-    headline: 'Fome Emocional',
-    problem: 'Ansiedade vira calorias extras sem perceber.',
-    solution: 'Identifique gatilhos e quebre o ciclo.',
+    headline: 'Ansiedade que Engorda',
+    problem: 'Estresse no trabalho = chocolate. Briga em casa = doce. Ansiedade = tudo que encontra pela frente. Você come as emoções e engorda as frustrações.',
+    bridge: 'Não adianta fazer dieta se não quebrar o ciclo emocional. Você precisa entender QUANDO e POR QUE come.',
+    solution: 'Identificamos seus gatilhos emocionais e criamos estratégias específicas. Com o nosso protocolo Z21, Você aprende a separar fome real de fome emocional.',  
     gradient: 'from-pink-500/10 to-rose-500/5',
     borderColor: 'border-pink-200/50',
     iconBg: 'from-pink-500 to-rose-600',
@@ -124,25 +128,25 @@ const MainCardSection = ({ config }) => {
         <div className="flex items-start gap-4">
 
           <div className="flex-1">
-            <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r ${config.badgeGradient} text-white text-xs font-semibold mb-3 shadow-sm`}>
-              <span>Foco Principal</span>
+            <div className={`inline-flex  items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r ${config.badgeGradient} text-white text-xs font-semibold mb-3 shadow-sm`}>
+              <span className="text-[15px]">{config.headline}</span>
             </div>
-            <h4 className="text-lg font-bold text-slate-900 leading-tight mb-3">
-              {config.headline}
-            </h4>
+            
             <div className="space-y-3">
               <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <p className="text-sm text-slate-800">
+                <p className="text-md text-slate-800 ">
                   <span className="font-semibold text-slate-900">O que está acontecendo:</span>
                 </p>
-                <p className="text-sm text-slate-700 mt-1">{config.problem}</p>
+                <p className="text-md text-left text-slate-700 mt-1">{config.problem}</p>
+                <p className="text-md text-left mt-3 text-slate-700 mt-1">{config.bridge}</p>
+
               </div>
-              {/* <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/30 shadow-sm">
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/30 shadow-sm">
                 <p className="text-sm text-slate-800">
                   <span className="font-semibold text-slate-900">Nossa abordagem:</span>
                 </p>
-                <p className="text-sm text-slate-700 mt-1">{config.solution}</p>
-              </div> */}
+                <p className="text-md text-left text-slate-700 mt-1">{config.solution}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -235,7 +239,7 @@ const BenefitsSection = ({ symptoms }) => {
           <span className="text-slate-700 font-medium text-sm">Emagrecer sem sofrimento</span>
         </div>
 
-       
+
       </div>
     </div>
   )
@@ -280,7 +284,7 @@ export const PersonalizedMessageModern = ({ answers }) => {
       <HeaderSection />
       <MainCardSection config={challengeConfig} />
       <BenefitsSection symptoms={symptoms} />
-      
+
     </div>
   )
 }
