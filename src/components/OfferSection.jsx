@@ -12,6 +12,7 @@ import mixpanelTracker from '../utils/mixpanelTracker.js'
 
 import PersonalizedMessageModern from '../utils/PersonalizedMessageModern.jsx'
 import FeaturesShowcase from './FeaturesShowcase.jsx'
+import VideoProcessingBanner from './VideoProcessingBanner.jsx'
 
 export default function OptimizedOfferSection({ answers }) {
   const videoRef = useRef(null);
@@ -53,54 +54,7 @@ export default function OptimizedOfferSection({ answers }) {
     mixpanelTracker.trackCheckoutClick('planofit_annual', 80.85);
   }
 
-  // Função para gerar mensagem personalizada baseada no tempo e respostas
-  const getPersonalizedMessage = (answers, currentTime) => {
-    const challenge = answers?.main_challenge || 'general';
-    
-    // Mensagens baseadas no tempo assistido
-    if (currentTime < 60) {
-      switch (challenge) {
-        case 'no_time':
-          return "Analisando sua rotina corrida para criar um plano que se encaixe perfeitamente...";
-        case 'confusion':
-          return "Organizando todas as informações para eliminar sua confusão...";
-        case 'motivation':
-          return "Identificando estratégias para manter sua motivação em alta...";
-        case 'results':
-          return "Analisando porque você não está vendo resultados...";
-        default:
-          return "Processando suas respostas para criar algo personalizado...";
-      }
-    } else if (currentTime < 120) {
-      switch (challenge) {
-        case 'no_time':
-          return "Criando rotinas rápidas e eficazes para seu dia a dia...";
-        case 'confusion':
-          return "Simplificando toda complexidade em um plano claro...";
-        case 'motivation':
-          return "Desenvolvendo técnicas para você nunca mais desistir...";
-        case 'results':
-          return "Identificando exatamente o que está faltando no seu treino...";
-        default:
-          return "Organizando informações para sua situação específica...";
-      }
-    } else if (currentTime < 180) {
-      switch (challenge) {
-        case 'no_time':
-          return "Finalizando seu plano de 15 minutos por dia...";
-        case 'confusion':
-          return "Preparando seu guia passo a passo sem complicações...";
-        case 'motivation':
-          return "Quase pronto... preparando suas ferramentas de motivação...";
-        case 'results':
-          return "Estruturando o método que finalmente vai funcionar...";
-        default:
-          return "Quase pronto... preparando seu plano personalizado...";
-      }
-    } else {
-      return "Finalizando os últimos detalhes do seu plano...";
-    }
-  }
+
 
 
   return (
@@ -123,16 +77,10 @@ export default function OptimizedOfferSection({ answers }) {
 
         {/* Banner discreto logo abaixo do vídeo */}
         {!hasWatched170Seconds && (
-          <div className="w-full max-w-3xl mx-auto mb-6 bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-100 rounded-lg p-4">
-            <div className="flex items-center justify-center gap-3">
-              <div className="w-4 h-4">
-                <div className="w-4 h-4 border-2 border-emerald-400 rounded-full animate-spin border-t-transparent"></div>
-              </div>
-              <p className="text-emerald-700 font-medium text-base text-lg">
-                {getPersonalizedMessage(answers, currentWatchTime)}
-              </p>
-            </div>
-          </div>
+          <VideoProcessingBanner 
+            answers={answers} 
+            currentWatchTime={currentWatchTime} 
+          />
         )}
 
         <section id='offer' className={hasWatched170Seconds ? 'block' : 'hidden'}>

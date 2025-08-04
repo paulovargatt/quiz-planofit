@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Progress } from '@/components/ui/progress.jsx'
-import { Badge } from '@/components/ui/badge.jsx'
 import { CheckCircle, Heart, Zap, Star, Clock, Shield, Gift } from 'lucide-react'
 import OfferSection from './components/OfferSection.jsx'
 import FBTracker from './lib/facebookTracker.js'
 import mixpanelTracker from './utils/mixpanelTracker.js'
+import image from './assets/home.webp'
 import './App.css'
 
 function App() {
@@ -32,7 +32,7 @@ function App() {
 
     // Inicializa o Mixpanel tracker
     mixpanelTracker.init();
-    
+
     // Track page view inicial
     mixpanelTracker.trackPageView('Quiz - Início');
 
@@ -84,7 +84,7 @@ function App() {
     },
     {
       id: 'symptoms',
-      title: 'Além da dificuldade para emagrecer, você se identifica com algum desses sinais?',
+      title: 'Você se identifica com algum desses sinais?',
       subtitle: 'Pode selecionar mais de um',
       multiple: true,
       options: [
@@ -98,8 +98,8 @@ function App() {
     },
     {
       id: 'commitment',
-      title: 'O quanto você está disposta a mudar seus hábitos para ter resultados reais e duradouros?',
-      subtitle: 'Seja honesta sobre sua disposição',
+      title: 'Você está disposta a mudar seus hábitos para ter resultados reais e duradouros?',
+      subtitle: 'Sobre sua disposição',
       options: [
         { id: 'full_transformation', text: 'Estou pronta para uma transformação completa!', emoji: '🔥' },
         { id: 'gradual_change', text: 'Quero começar aos poucos, mas com resultados visíveis', emoji: '📈' },
@@ -109,7 +109,7 @@ function App() {
     {
       id: 'weight_loss_attempts',
       title: 'Quantas vezes você já tentou emagrecer nos últimos 2 anos?',
-      subtitle: 'Seja honesta - isso vai ajudar no seu diagnóstico',
+      subtitle: 'Isso vai ajudar no seu diagnóstico',
       options: [
         { id: 'first_time', text: 'Esta é minha primeira tentativa séria', emoji: '🆕' },
         { id: 'few_times', text: '2-3 tentativas sem sucesso duradouro', emoji: '🔄' },
@@ -125,33 +125,33 @@ function App() {
       const newAnswers = currentAnswers.includes(answerId)
         ? currentAnswers.filter(id => id !== answerId)
         : [...currentAnswers, answerId]
-      
+
       const updatedAnswers = { ...answers, [questionId]: newAnswers }
       setAnswers(updatedAnswers)
       saveQuizState(currentStep, updatedAnswers, isLoading)
-      
+
       // Track questão respondida
       mixpanelTracker.trackQuestionAnswered(
-        questionId, 
-        answerId, 
-        currentStep + 1, 
-        questions.length, 
+        questionId,
+        answerId,
+        currentStep + 1,
+        questions.length,
         isMultiple
       );
     } else {
       const updatedAnswers = { ...answers, [questionId]: answerId }
       setAnswers(updatedAnswers)
       saveQuizState(currentStep, updatedAnswers, isLoading)
-      
+
       // Track questão respondida
       mixpanelTracker.trackQuestionAnswered(
-        questionId, 
-        answerId, 
-        currentStep + 1, 
-        questions.length, 
+        questionId,
+        answerId,
+        currentStep + 1,
+        questions.length,
         isMultiple
       );
-      
+
       setTimeout(nextStep, 300)
     }
   }
@@ -161,7 +161,7 @@ function App() {
       const newStep = currentStep + 1
       setCurrentStep(newStep)
       saveQuizState(newStep, answers, isLoading)
-      
+
       // Track mudança de step
       mixpanelTracker.trackStepChange(newStep, questions.length, 'next');
     } else {
@@ -173,13 +173,13 @@ function App() {
     setIsLoading(true)
     saveQuizState(currentStep, answers, true)
     setLoadingProgress(0)
-    
+
     // Track conclusão do quiz
     mixpanelTracker.track('Quiz Completed', {
       total_questions: questions.length,
       answers_given: Object.keys(answers).length
     });
-    
+
     const interval = setInterval(() => {
       setLoadingProgress(prev => {
         if (prev >= 100) {
@@ -187,10 +187,10 @@ function App() {
           setIsLoading(false)
           saveQuizState(currentStep + 1, answers, false)
           setCurrentStep(currentStep + 1)
-          
+
           // Track chegada na página de venda
           mixpanelTracker.trackOfferPageView();
-          
+
           return 100
         }
         return prev + Math.random() * 15
@@ -210,42 +210,69 @@ function App() {
 
   if (currentStep === 0) {
     return (
-      <div className=" overflow-x-hidden min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-2xl text-center shadow-xl
-         sm:shadow-2xl border-0 rounded-2xl backdrop-blur-sm">
+      <div className="overflow-x-hidden min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-2xl text-center shadow-xl sm:shadow-2xl border-0 rounded-2xl backdrop-blur-sm">
+          <div className="px-4">
+            <img
+              src={image}
+              className="mx-auto rounded-lg object-cover shadow-md"
+              alt=""
+              loading="lazy"
+            />
+          </div>
           <CardHeader className="pb-1">
 
-            <img src="https://i.imgur.com/K4PzvmK.jpeg" className='w-60 h-60 mx-auto mb-6' alt="" />
-            <CardTitle className="text-3xl sm:text-4xl font-bold
-             tracking-tight bg-gradient-to-r from-orange-600
-              to-pink-500 bg-clip-text text-transparent mb-2">
-              Por que <span className="text-[#6b7280] "> você não consegue emagrecer?</span>
+            <CardTitle className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-800 mb-2 leading-tight">
+              Por que você{' '}
+              <span className="bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
+                engorda mesmo comendo pouco?
+              </span>{' '}
+              <span className="text-4xl">😰</span>
             </CardTitle>
 
-            <span className="font-semibold text-base text-lg sm:text-lg text-red-600">Descubra qual erro está sabotando seus resultados</span>
-            {/* <p className="mt-3 text-sm sm:text-base text-gray-700 leading-relaxed">
-              Responda <span className="font-semibold text-pink-600">essas perguntas rápidas</span> e receba seu
-              <span className="font-semibold text-purple-600"> diagnóstico personalizado</span>.
-            </p> */}
+            <p className="text-lg sm:text-xl font-semibold text-gray-600 leading-relaxed">
+              Descubra qual erro está sabotando seus resultados... <br /><span className="text-red-600">A resposta vai te chocar</span>
+            </p>
             <div className="flex items-center justify-center gap-2 mt-2 text-gray-600">
               <Clock className="w-5 h-5" />
               <span className="font-medium">Leva menos de 2 minutos</span>
             </div>
           </CardHeader>
+
           <CardContent className="px-4">
             <Button
               onClick={nextStep}
-              className="w-full py-8 pulse-animation text-lg font-bold 
-              bg-gradient-to-r from-orange-500
-               to-orange-600 hover:from-orange-600
-                hover:to-orange-700 text-white rounded-xl
-                 transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="
+          group relative pulse-animation w-full py-6 sm:py-7 text-lg font-bold
+          rounded-2xl cursor-pointer
+          bg-gradient-to-r from-orange-400 to-orange-600
+          hover:from-orange-600 hover:to-orange-700
+          text-white
+          shadow-[0_10px_24px_rgba(255,106,0,0.35)]
+          hover:shadow-[0_14px_28px_rgba(255,106,0,0.45)]
+          transition-all duration-200
+          focus:outline-none focus:ring-4 focus:ring-orange-300
+          active:scale-[0.99]
+        "
             >
+              {/* Glow border */}
+              <span className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-white/10"></span>
+
+              {/* Shine sweep */}
+              <span className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
+                <span className="absolute left-[-30%] top-0 h-full w-[30%] bg-white/20 blur-lg transform skew-x-[-20deg] opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
+              </span>
+
               <span className="flex items-center justify-center">
                 Vamos Começar
-                <Zap className="w-5 h-5 ml-2" />
+                <Zap className="w-5 h-5 ml-2 transition-transform duration-200 group-hover:translate-x-1" />
               </span>
             </Button>
+
+            {/* Microcopy de segurança sob o CTA sem alterar a copy principal */}
+            <div className="mt-2 text-gray-500 text-xs font-medium">
+              Clique e comece agora
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -305,8 +332,8 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex items-center justify-center p-3 sm:p-4">
       <Card className="w-full max-w-2xl shadow-xl sm:shadow-2xl border-0 rounded-2xl mx-auto">
-        <CardHeader className="pb-4 sm:pb-6 px-4 sm:px-6">
-          <div className="mb-4 sm:mb-6">
+        <CardHeader className="pb-0 sm:pb-6 px-4 sm:px-6">
+          <div className="mb-2 sm:mb-2">
             <Progress value={progress} className="h-1.5 sm:h-2 rounded-full" />
             <div className="flex justify-between text-xs sm:text-sm text-gray-600 mt-2">
               <span>Pergunta {currentStep} de {questions.length}</span>
@@ -316,7 +343,7 @@ function App() {
           <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900 text-center mb-2 leading-tight tracking-tight">
             {question.title}
           </CardTitle>
-          <p className="text-gray-700 text-center text-sm sm:text-base">{question.subtitle}</p>
+          <p className="text-orange-700 font-bold text-center text-sm sm:text-base">{question.subtitle}</p>
         </CardHeader>
         <CardContent className="px-4 sm:px-6 pb-6 sm:pb-8">
           <div className="space-y-3 sm:space-y-4">
