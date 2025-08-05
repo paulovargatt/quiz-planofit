@@ -2,7 +2,7 @@ export default function VideoProcessingBanner({ answers, currentWatchTime }) {
   // Função para calcular progresso com aceleração nos primeiros 60s
   const calculateProgress = (currentTime) => {
     const totalTime = 230; // Tempo total para liberação da página
-    
+
     if (currentTime < 60) {
       // Progresso acelerado: 70% nos primeiros 60 segundos
       return (currentTime / 60) * 70;
@@ -18,7 +18,7 @@ export default function VideoProcessingBanner({ answers, currentWatchTime }) {
   const getPersonalizedMessage = (answers, currentTime) => {
     const challenge = answers?.main_challenge || 'general';
     const progress = calculateProgress(currentTime);
-    
+
     // Mensagens baseadas no tempo assistido com engajamento
     if (currentTime < 60) {
       switch (challenge) {
@@ -138,7 +138,7 @@ export default function VideoProcessingBanner({ answers, currentWatchTime }) {
           {messageData.stage}
         </span>
       </div>
-      
+
       {/* Mensagem principal */}
       <div className="flex items-center justify-center gap-3 mb-4">
         <div className="w-5 h-5">
@@ -148,7 +148,13 @@ export default function VideoProcessingBanner({ answers, currentWatchTime }) {
           {messageData.message}
         </p>
       </div>
-      
+
+      <div className="flex items-center justify-center gap-3 mb-4">
+        <p className="text-gray-600 font-medium text-base">
+          Continue assistindo o vídeo até o final para receber sua avaliação completa
+        </p>
+      </div>
+
       {/* Barra de progresso visual */}
       <div className="w-full">
         <div className="flex justify-between items-center mb-2">
@@ -158,7 +164,7 @@ export default function VideoProcessingBanner({ answers, currentWatchTime }) {
           </span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-1.5">
-          <div 
+          <div
             className="bg-gradient-to-r from-emerald-500 to-green-500 h-1.5 rounded-full transition-all duration-1000 ease-out"
             style={{ width: `${messageData.progress}%` }}
           ></div>
