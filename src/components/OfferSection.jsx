@@ -45,7 +45,7 @@ export default function OptimizedOfferSection({ answers }) {
     
     
     // Libera a página quando atingir 230 segundos
-    if (watchedSeconds >= 230 && !hasWatched170Seconds) {
+    if (watchedSeconds >= 1 && !hasWatched170Seconds) {
       setHasWatched170Seconds(true);
     }
   }
