@@ -1,17 +1,17 @@
-import { Button } from '@/components/ui/button.jsx'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx'
-import { Badge } from '@/components/ui/badge.jsx'
-import { CheckCircle, Heart, Zap, Star, Clock, Shield, Gift, Sparkles, BarChart3, Camera, Calendar } from 'lucide-react'
+import { Clock} from 'lucide-react'
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer } from 'recharts'
 import { useEffect, useRef, useState } from 'react'
-import lightLogo from '@/assets/logo.webp'
 
 import pack from '@/assets/pack.webp'
 import mixpanelTracker from '../utils/mixpanelTracker.js'
 
 import PersonalizedMessageModern from '../utils/PersonalizedMessageModern.jsx'
 import FeaturesShowcase from './FeaturesShowcase.jsx'
-import VideoProcessingBanner from './VideoProcessingBanner.jsx'
+// import VideoProcessingBanner from './VideoProcessingBanner.jsx'
+import HLSPlayer from './HLSPlayer.jsx'
+
+
+
 
 export default function OptimizedOfferSection({ answers }) {
   const videoRef = useRef(null);
@@ -84,19 +84,27 @@ export default function OptimizedOfferSection({ answers }) {
     <div className=" overflow-x-hidden min-h-screen bg-white flex items-center
      justify-center p-2 sm:p-6 w-full">
       <div className="w-full max-w-4xl">
-        <img src={lightLogo} alt="Logo" className="w-24 mx-auto mb-2" />
+        {/* <img src={lightLogo} alt="Logo" className="w-24 mx-auto mb-2" /> */}
 
         {/* Vídeo HLS Player - MANTIDO */}
         <div className="mb-8 sm:mb-8">
-          <div style={{ position: 'relative', aspectRatio: '16/9' }}>
+          {/* <div style={{ position: 'relative', aspectRatio: '16/9' }}>
             <iframe
               loading="lazy" title="Gumlet video player"
               className='rounded-2xl'
-              src="https://play.gumlet.io/embed/68957eedbcf5dc9e17329925?background=false&autoplay=true&loop=false&disableControls=false"
+              src="https://play.gumlet.io/embed/68957eedbcf5dc9e17329925?background=false&autoplay=false&loop=false&disableControls=false"
               style={{ border: 'none', position: 'absolute', top: 0, left: 0, height: '100%', width: '100%' }}
               allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;">
             </iframe>
-          </div>
+          </div> */}
+           <HLSPlayer
+            src="https://video.gumlet.io/667396f5edc68b774a04aebc/68957eedbcf5dc9e17329925/main.m3u8"
+            onTimeUpdate={handleTimeUpdate}
+            autoplay={false}
+            className="w-full max-w-2xl mx-auto h-[200px] sm:h-[300px] md:h-[400px] shadow-2xl"
+            onLoadedData={() => console.log('Vídeo carregado')}
+            onEnded={() => console.log('Vídeo terminou')}
+          />
         </div>
 
         {/* Banner discreto logo abaixo do vídeo */}

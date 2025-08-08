@@ -365,6 +365,7 @@ export default function HLSPlayer({
         className="w-full h-full object-cover rounded-lg"
         playsInline
         muted={false}
+        autoPlay={false}
         preload="metadata"
       />
       
