@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Progress } from '@/components/ui/progress.jsx'
-import { CheckCircle, Heart, Zap, Star, Clock, Shield, Gift } from 'lucide-react'
+import { CheckCircle, Heart, Zap, Star, Clock, Shield, Gift, ChevronLeft } from 'lucide-react'
 import OfferSection from './components/OfferSection.jsx'
 import FBTracker from './lib/facebookTracker.js'
 import mixpanelTracker from './utils/mixpanelTracker.js'
-import ageImg1 from './assets/foto.webp'
-import ageImg2 from './assets/z21.webp'
-import ageImg3 from './assets/2.webp'
-import ageImg4 from './assets/assistent.webp'
+import ageImg1 from './assets/18.webp'
+import ageImg2 from './assets/26.webp'
+import ageImg3 from './assets/36.webp'
+import ageImg4 from './assets/46.webp'
 import './App.css'
 
 function App() {
@@ -88,48 +88,48 @@ function App() {
     },
     {
       id: 'main_challenge',
-      title: 'Qual dessas situações mais te impede de alcançar o corpo dos seus sonhos?',
-      subtitle: 'Seja 100% sincera conosco',
+      title: 'O que você acha que mais te trava hoje?',
+      subtitle: 'Escolha uma opção',
       options: [
-        { id: 'restrictive_diets,', text: 'Começo dietas, mas desisto rápido e engordo tudo de novo', emoji: '😔' },
-        { id: 'no_time', text: 'Não tenho tempo para planejar refeições e acabo comendo qualquer coisa', emoji: '⏰' },
-        { id: 'confusion', text: 'Fico perdida com tanta informação e não sei o que comer', emoji: '🤔' },
-        { id: 'emotional_eating', text: 'Desconto a ansiedade e o estresse na comida', emoji: '😰' }
+        { id: 'restrictive_diets,', text: 'Desisto das dietas e engordo de novo', emoji: '😔' },
+        { id: 'no_time', text: 'Sem tempo → como qualquer coisa ', emoji: '⏰' },
+        { id: 'confusion', text: 'Confusão: não sei o que fazer ou comer', emoji: '🤔' },
+        { id: 'emotional_eating', text: 'Ansiedade e estresse vira comida', emoji: '😰' }
       ]
     },
     {
       id: 'symptoms',
-      title: 'Você se identifica com algum desses sinais?',
+      title: 'Quais desses sintomas você mais sente?',
       subtitle: '',
       multiple: false,
       options: [
-        { id: 'fatigue', text: 'Cansaço constante e falta de energia', emoji: '😴' },
+        { id: 'fatigue', text: 'Cansaço / pouca energia', emoji: '😴' },
         { id: 'metabolism', text: 'Dificuldade para emagrecer', emoji: '🔴' },
-        { id: 'low_self_esteem', text: 'Baixa autoestima e insatisfação com o corpo', emoji: '😞' },
+        { id: 'low_self_esteem', text: 'Autoestima baixa', emoji: '😞' },
         { id: 'hair_nails', text: 'Queda de cabelo, unhas fracas ou pele ressecada', emoji: '💇‍♀️' },
         { id: 'uncontrolled_hunger', text: 'Fome descontrolada ou compulsão alimentar', emoji: '🍽️' },
-        { id: 'sleep_issues', text: 'Dificuldade para dormir ou sono de má qualidade', emoji: '🌙' }
+        { id: 'sleep_issues', text: 'Sono ruim', emoji: '🌙' }
       ]
     },
     {
       id: 'commitment',
-      title: 'Você está disposta a mudar seus hábitos para ter resultados reais e duradouros?',
-      subtitle: 'Sobre sua disposição',
+      title: 'Quão comprometida você está?',
+      subtitle: 'Seja sincera 🙂',
       options: [
-        { id: 'full_transformation', text: 'Estou pronta para uma transformação completa!', emoji: '🔥' },
-        { id: 'gradual_change', text: 'Quero começar aos poucos, mas com resultados visíveis', emoji: '📈' },
-        { id: 'easy_path', text: 'Preciso de algo muito fácil de seguir, sem complicação', emoji: '✨' }
+        { id: 'full_transformation', text: 'Quero mudar tudo e ter mais saúde já!', emoji: '🔥' },
+        { id: 'gradual_change', text: 'Quero começar aos poucos', emoji: '📈' },
+        { id: 'easy_path', text: 'Preciso de algo muito fácil de seguir', emoji: '✨' }
       ]
     },
     {
       id: 'weight_loss_attempts',
       title: 'Quantas vezes você já tentou emagrecer nos últimos 2 anos?',
-      subtitle: 'Isso vai ajudar no seu diagnóstico',
+      subtitle: '',
       options: [
-        { id: 'first_time', text: 'Esta é minha primeira tentativa séria', emoji: '🆕' },
-        { id: 'few_times', text: '2-3 tentativas sem sucesso duradouro', emoji: '🔄' },
-        { id: 'many_times', text: 'Já perdi as contas de tantas tentativas', emoji: '😓' },
-        { id: 'constant_struggle', text: 'Vivo em eterna luta com a balança', emoji: '⚖️' }
+        { id: 'first_time', text: 'É minha primeira tentativa', emoji: '🆕' },
+        { id: 'few_times', text: '2–3 vezes, sem sucesso', emoji: '🔄' },
+        { id: 'many_times', text: 'Perdi a conta', emoji: '😓' },
+        { id: 'constant_struggle', text: 'Luto constante com a balança', emoji: '⚖️' }
       ]
     }
   ]
@@ -181,6 +181,14 @@ function App() {
       mixpanelTracker.trackStepChange(newStep, questions.length, 'next');
     } else {
       startLoading()
+    }
+  }
+
+  const prevStep = () => {
+    if (currentStep > 1) {
+      const newStep = currentStep - 1
+      setCurrentStep(newStep)
+      saveQuizState(newStep, answers, isLoading)
     }
   }
 
@@ -274,16 +282,29 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex items-center justify-center p-3 sm:p-4">
-      <Card className="w-full max-w-2xl shadow-xl sm:shadow-2xl border-0 rounded-2xl mx-auto">
+      <Card className="w-full max-w-lg shadow-xl sm:shadow-2xl border-0 rounded-2xl mx-auto">
         <CardHeader className="pb-0 sm:pb-6 px-4 sm:px-6">
+          <div className="flex items-center mb-2">
+            {currentStep > 1 && (
+              <button
+                onClick={prevStep}
+                className="inline-flex items-center gap-1 text-gray-600 hover:text-gray-900 transition"
+                aria-label="Voltar"
+              >
+                <ChevronLeft className="w-5 h-5" />
+                <span className="text-sm font-medium">Voltar</span>
+              </button>
+            )}
+          </div>
           <div className="mb-2 sm:mb-2">
             <Progress value={progress} className="h-1.5 sm:h-2 rounded-full" />
             <div className="flex justify-between text-xs sm:text-sm text-gray-600 mt-2">
-              <span>Pergunta {currentStep} de {questions.length}</span>
+              <span> {currentStep} de {questions.length}</span>
               <span>{Math.round(progress)}% completo</span>
             </div>
           </div>
-          <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900 text-center mb-2 leading-tight tracking-tight">
+          <CardTitle className="text-xl sm:text-2xl font-bold text-gray-700 
+          text-center mb-2 leading-tight tracking-tight max-w-[330px] mx-auto">
             {question.title}
           </CardTitle>
           <p className="text-orange-700 font-bold text-center text-sm sm:text-base">{question.subtitle}</p>
@@ -305,9 +326,10 @@ function App() {
                         : 'bg-white border-gray-200 text-gray-900 hover:border-teal-400'
                     ].join(' ')}
                   >
-                    <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center justify-between gap-3">
                       <span className="text-base sm:text-lg font-medium">{option.text}</span>
-                      <img src={option.image} alt={option.text} className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover" />
+                      <img src={option.image} alt={option.text} 
+                      className="w-20 h-20 sm:w-20 sm:h-20 rounded-lg object-contain" />
                     </div>
                   </button>
                 )

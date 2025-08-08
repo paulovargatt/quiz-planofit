@@ -4,7 +4,6 @@ import { Badge } from '@/components/ui/badge.jsx'
 import { CheckCircle, Heart, Zap, Star, Clock, Shield, Gift, Sparkles, BarChart3, Camera, Calendar } from 'lucide-react'
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer } from 'recharts'
 import { useEffect, useRef, useState } from 'react'
-import HLSPlayer from './HLSPlayer.jsx'
 import lightLogo from '@/assets/logo.webp'
 
 import pack from '@/assets/pack.webp'
@@ -307,13 +306,13 @@ export default function OptimizedOfferSection({ answers }) {
 
 
 
-          <div className="mx-auto max-w-5xl px-4 mb-3" id="pricing">
+          <div className="mx-auto max-w-5xl px-4 mb-3 max-w-md" id="pricing">
             {/* Vaga reservada + contador real */}
-            <div className="mb-6 flex items-center justify-between">
+            <div className="mb-6 flex items-center  justify-between">
               <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 text-emerald-700 px-3 py-1.5 text-xs font-semibold">
                 ✅ Sua vaga foi reservada
               </div>
-              <div className="inline-flex items-center gap-2 rounded-full bg-red-50 text-red-700 px-3 py-1.5 text-sm font-bold">
+              <div className="inline-flex items-center flex-w gap-2 rounded-full bg-red-50 text-red-700 px-3 py-1.5 text-sm font-bold">
                 <Clock className="w-4 h-4" />
                 {formatTime(timeLeftMs)}
               </div>
@@ -327,10 +326,9 @@ export default function OptimizedOfferSection({ answers }) {
                 <h3 className="text-2xl font-extrabold text-gray-900 leading-tight">
                   Acesse tudo agora
                 </h3>
-                <p className="text-[14px] text-black mt-1">Sem assinatura, você escolhe o tempo de acesso</p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 text-[14px] text-gray-700">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-2.5 text-[14px] text-gray-700">
                 <div className="flex items-start gap-2">
                   <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange-500 text-white text-[10px]">✓</span>
                   <span>Plataforma completa</span>
@@ -378,7 +376,7 @@ export default function OptimizedOfferSection({ answers }) {
                     href={checkoutUrl}
                     target="_blank"
                     onClick={handleCheckoutClick}
-                    className="mt-4 block text-center w-full rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold py-3 shadow-lg shadow-emerald-600/30 hover:from-emerald-600 hover:to-green-600 active:scale-[0.99] transition-all"
+                    className="mt-4 block pulse-animation text-center w-full rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold py-3 shadow-lg shadow-emerald-600/30 hover:from-emerald-600 hover:to-green-600 active:scale-[0.99] transition-all"
                   >
                     Aproveitar agora
                   </a>
@@ -412,6 +410,8 @@ export default function OptimizedOfferSection({ answers }) {
               <div className="pointer-events-none absolute -bottom-12 -right-10 h-40 w-40 rounded-full bg-orange-200/40 blur-3xl"></div>
             </div>
           </div>
+
+  
 
           <section id="bonus">
           <div className="content text break-words py-2 text-center">
@@ -448,11 +448,33 @@ export default function OptimizedOfferSection({ answers }) {
           </div>
           </section>
 
+          <a
+                    href={checkoutUrl}
+                    target="_blank"
+                    onClick={handleCheckoutClick}
+                    className="mt-4 mb-4 block pulse-animation text-center 
+                    max-w-[333px] mx-auto w-full rounded-xl bg-gradient-to-r from-orange-600 to-yellow-600 text-white font-bold py-3 shadow-lg shadow-emerald-600/30 hover:from-emerald-600 hover:to-green-600 active:scale-[0.99] transition-all"
+                  >
+                    Quero me inscrever
+                  </a>
+
 
           <FeaturesShowcase />
 
+          <a
+                    href={checkoutUrl}
+                    target="_blank"
+                    onClick={handleCheckoutClick}
+                    className="mt-4 block pulse-animation text-center 
+                    max-w-[333px] mx-auto w-full rounded-xl bg-gradient-to-r from-orange-600 to-yellow-600 text-white font-bold py-3 shadow-lg shadow-emerald-600/30 hover:from-emerald-600 hover:to-green-600 active:scale-[0.99] transition-all"
+                  >
+                    Quero me inscrever
+                  </a>
+
         </section>
 
+        <p className="text-center mt-20 text-xs text-gray-600 max-w-[450px] mx-auto">
+        A PlanoFit é uma ferramenta de apoio criada com base científica para te ajudar na jornada de emagrecimento. Por cuidado com sua saúde, consulte sempre um médico antes de mudanças significativas na alimentação ou exercícios.</p>
       </div>
     </div>
   )

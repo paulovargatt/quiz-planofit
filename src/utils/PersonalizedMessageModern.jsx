@@ -143,9 +143,9 @@ const MainCardSection = ({ config }) => {
               </div>
               <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/30 shadow-sm">
                 <p className="text-sm text-slate-800">
-                  <span className="font-semibold text-slate-900">Nossa abordagem:</span>
+                  <span className="font-semibold text-slate-900 text-md">Veja como podemos ajudar você 👇</span>
                 </p>
-                <p className="text-md text-left text-slate-700 mt-1">{config.solution}</p>
+                {/* <p className="text-md text-left text-slate-700 mt-1">{config.solution}</p> */}
               </div>
             </div>
           </div>
