@@ -1,7 +1,7 @@
 import { Clock} from 'lucide-react'
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer } from 'recharts'
 import { useEffect, useRef, useState } from 'react'
-
+import { CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import pack from '@/assets/pack.webp'
 import mixpanelTracker from '../utils/mixpanelTracker.js'
 
