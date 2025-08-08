@@ -6,7 +6,10 @@ import { CheckCircle, Heart, Zap, Star, Clock, Shield, Gift } from 'lucide-react
 import OfferSection from './components/OfferSection.jsx'
 import FBTracker from './lib/facebookTracker.js'
 import mixpanelTracker from './utils/mixpanelTracker.js'
-import image from './assets/home.webp'
+import ageImg1 from './assets/foto.webp'
+import ageImg2 from './assets/z21.webp'
+import ageImg3 from './assets/2.webp'
+import ageImg4 from './assets/assistent.webp'
 import './App.css'
 
 function App() {
@@ -44,13 +47,13 @@ function App() {
       const savedAnswers = localStorage.getItem(QUIZ_ANSWERS_KEY)
       const savedLoading = localStorage.getItem(QUIZ_LOADING_KEY)
       return {
-        step: savedStep ? parseInt(savedStep) : 0,
+        step: savedStep ? parseInt(savedStep) : 1,
         answers: savedAnswers ? JSON.parse(savedAnswers) : {},
         loading: savedLoading === 'true'
       }
     } catch (error) {
       console.warn('Erro ao carregar estado do quiz:', error)
-      return { step: 0, answers: {}, loading: false }
+      return { step: 1, answers: {}, loading: false }
     }
   }
 
@@ -72,6 +75,18 @@ function App() {
 
   const questions = [
     {
+      id: 'age_range',
+      type: 'age',
+      title: 'Plano personalizado para emagrecer com Inteligência Artificial',
+      subtitle: 'De acordo com sua idade',
+      options: [
+        { id: '18_25', text: '18 a 25 anos', image: ageImg1 },
+        { id: '26_35', text: '26 a 35 anos', image: ageImg2 },
+        { id: '36_45', text: '36 a 45 anos', image: ageImg3 },
+        { id: '46_plus', text: '+46 anos', image: ageImg4 }
+      ]
+    },
+    {
       id: 'main_challenge',
       title: 'Qual dessas situações mais te impede de alcançar o corpo dos seus sonhos?',
       subtitle: 'Seja 100% sincera conosco',
@@ -85,8 +100,8 @@ function App() {
     {
       id: 'symptoms',
       title: 'Você se identifica com algum desses sinais?',
-      subtitle: 'Pode selecionar mais de um',
-      multiple: true,
+      subtitle: '',
+      multiple: false,
       options: [
         { id: 'fatigue', text: 'Cansaço constante e falta de energia', emoji: '😴' },
         { id: 'metabolism', text: 'Dificuldade para emagrecer', emoji: '🔴' },
@@ -205,79 +220,7 @@ function App() {
     }
     return answers[question.id]
   }
-
-
-
-  if (currentStep === 0) {
-    return (
-      <div className="overflow-x-hidden min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-2xl text-center shadow-xl sm:shadow-2xl border-0 rounded-2xl backdrop-blur-sm">
-          <div className="px-4">
-            <img
-              src={image}
-              className="mx-auto rounded-lg object-cover shadow-md"
-              alt=""
-              loading="lazy"
-            />
-          </div>
-          <CardHeader className="pb-1">
-
-            <CardTitle className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-800 mb-2 leading-tight">
-              Por que você{' '}
-              <span className="bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
-                engorda mesmo comendo pouco?
-              </span>{' '}
-              <span className="text-4xl">😰</span>
-            </CardTitle>
-
-            <p className="text-lg sm:text-xl font-semibold text-gray-600 leading-relaxed">
-              Descubra qual erro está sabotando seus resultados... <br /><span className="text-red-600">A resposta vai te chocar</span>
-            </p>
-            <div className="flex items-center justify-center gap-2 mt-2 text-gray-600">
-              <Clock className="w-5 h-5" />
-              <span className="font-medium">Leva menos de 2 minutos</span>
-            </div>
-          </CardHeader>
-
-          <CardContent className="px-4">
-            <Button
-              onClick={nextStep}
-              className="
-          group relative pulse-animation w-full py-6 sm:py-7 text-lg font-bold
-          rounded-2xl cursor-pointer
-          bg-gradient-to-r from-orange-400 to-orange-600
-          hover:from-orange-600 hover:to-orange-700
-          text-white
-          shadow-[0_10px_24px_rgba(255,106,0,0.35)]
-          hover:shadow-[0_14px_28px_rgba(255,106,0,0.45)]
-          transition-all duration-200
-          focus:outline-none focus:ring-4 focus:ring-orange-300
-          active:scale-[0.99]
-        "
-            >
-              {/* Glow border */}
-              <span className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-white/10"></span>
-
-              {/* Shine sweep */}
-              <span className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
-                <span className="absolute left-[-30%] top-0 h-full w-[30%] bg-white/20 blur-lg transform skew-x-[-20deg] opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
-              </span>
-
-              <span className="flex items-center justify-center">
-                Vamos Começar
-                <Zap className="w-5 h-5 ml-2 transition-transform duration-200 group-hover:translate-x-1" />
-              </span>
-            </Button>
-
-            {/* Microcopy de segurança sob o CTA sem alterar a copy principal */}
-            <div className="mt-2 text-gray-500 text-xs font-medium">
-              Clique e comece agora
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
+  
 
   if (isLoading) {
     return (
@@ -315,7 +258,7 @@ function App() {
   }
 
   const question = getCurrentQuestion()
-  const progress = currentStep === 0 ? 0 : ((currentStep) / questions.length) * 100
+  const progress = (currentStep / questions.length) * 100
 
   if (!question) {
     return (
@@ -346,33 +289,59 @@ function App() {
           <p className="text-orange-700 font-bold text-center text-sm sm:text-base">{question.subtitle}</p>
         </CardHeader>
         <CardContent className="px-4 sm:px-6 pb-6 sm:pb-8">
-          <div className="space-y-3 sm:space-y-4">
-            {question.options.map((option) => {
-              const isSelected = question.multiple
-                ? (answers[question.id] || []).includes(option.id)
-                : answers[question.id] === option.id
-              return (
-                <button
-                  key={option.id}
-                  onClick={() => handleAnswer(question.id, option.id, question.multiple)}
-                  className={[
-                    'w-full p-4 sm:p-5 text-left rounded-xl border transition-all duration-200',
-                    'hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400/60',
-                    'bg-white/90 backdrop-blur-sm',
-                    isSelected
-                      ? 'border-pink-500/70 bg-pink-50 shadow-md'
-                      : 'border-gray-200 hover:border-pink-300'
-                  ].join(' ')}
-                >
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <span className="text-2xl sm:text-3xl flex-shrink-0">{option.emoji}</span>
-                    <span className="text-gray-800 font-medium text-sm sm:text-base leading-relaxed">{option.text}</span>
-                    {isSelected && <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-pink-500 ml-auto flex-shrink-0" />}
-                  </div>
-                </button>
-              )
-            })}
-          </div>
+          {question.type === 'age' ? (
+            <div className="space-y-3 sm:space-y-4">
+              {question.options.map((option) => {
+                const isSelected = answers[question.id] === option.id
+                return (
+                  <button
+                    key={option.id}
+                    onClick={() => handleAnswer(question.id, option.id, false)}
+                    className={[
+                      'w-full p-3 sm:p-4 rounded-2xl border transition-all duration-200',
+                      'hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/60',
+                      isSelected
+                        ? 'bg-teal-600 border-teal-600 text-white shadow-md'
+                        : 'bg-white border-gray-200 text-gray-900 hover:border-teal-400'
+                    ].join(' ')}
+                  >
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-base sm:text-lg font-medium">{option.text}</span>
+                      <img src={option.image} alt={option.text} className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover" />
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          ) : (
+            <div className="space-y-3 sm:space-y-4">
+              {question.options.map((option) => {
+                const isSelected = question.multiple
+                  ? (answers[question.id] || []).includes(option.id)
+                  : answers[question.id] === option.id
+                return (
+                  <button
+                    key={option.id}
+                    onClick={() => handleAnswer(question.id, option.id, question.multiple)}
+                    className={[
+                      'w-full p-4 sm:p-5 text-left rounded-xl border transition-all duration-200',
+                      'hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400/60',
+                      'bg-white/90 backdrop-blur-sm',
+                      isSelected
+                        ? 'border-pink-500/70 bg-pink-50 shadow-md'
+                        : 'border-gray-200 hover:border-pink-300'
+                    ].join(' ')}
+                  >
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <span className="text-2xl sm:text-3xl flex-shrink-0">{option.emoji}</span>
+                      <span className="text-gray-800 font-medium text-sm sm:text-base leading-relaxed">{option.text}</span>
+                      {isSelected && <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-pink-500 ml-auto flex-shrink-0" />}
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          )}
 
 
           {question.multiple && isAnswered(question) && (

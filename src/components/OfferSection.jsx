@@ -18,6 +18,18 @@ export default function OptimizedOfferSection({ answers }) {
   const videoRef = useRef(null);
   const [hasWatched170Seconds, setHasWatched170Seconds] = useState(false);
   const [currentWatchTime, setCurrentWatchTime] = useState(0);
+  const COUNTDOWN_KEY = 'planofit-offer-countdown-start';
+  const OFFER_DURATION_MS = 20 * 60 * 1000; // 20 minutos reais
+  const [timeLeftMs, setTimeLeftMs] = useState(OFFER_DURATION_MS);
+  const checkoutUrl = 'https://pay.kiwify.com.br/1nfKg8z'; // TODO: atualizar para o link de R$97
+
+  // Formata mm:ss
+  const formatTime = (ms) => {
+    const total = Math.max(0, Math.floor(ms / 1000));
+    const m = String(Math.floor(total / 60)).padStart(2, '0');
+    const s = String(total % 60).padStart(2, '0');
+    return `${m}:${s}`;
+  }
 
   useEffect(() => {
     // Inicializa tracking de vídeo quando o componente montar
@@ -32,8 +44,20 @@ export default function OptimizedOfferSection({ answers }) {
     // Pequeno delay para garantir que o vídeo foi renderizado
     const timer = setTimeout(setupVideoTracking, 1000);
 
+    // Inicia/recupera contador real 20min
+    let start = localStorage.getItem(COUNTDOWN_KEY);
+    let startTime = start ? parseInt(start) : Date.now();
+    if (!start) localStorage.setItem(COUNTDOWN_KEY, String(startTime));
+    const updateTimer = () => {
+      const remaining = Math.max(0, startTime + OFFER_DURATION_MS - Date.now());
+      setTimeLeftMs(remaining);
+    };
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000);
+
     return () => {
       clearTimeout(timer);
+      clearInterval(interval);
       // Para o tracking quando o componente desmontar
       mixpanelTracker.stopVideoTracking('offer_video');
     };
@@ -42,8 +66,8 @@ export default function OptimizedOfferSection({ answers }) {
   const handleTimeUpdate = (currentTime, duration) => {
     const watchedSeconds = Math.floor(currentTime);
     setCurrentWatchTime(watchedSeconds);
-    
-    
+
+
     // Libera a página quando atingir 230 segundos
     if (watchedSeconds >= 1 && !hasWatched170Seconds) {
       setHasWatched170Seconds(true);
@@ -51,7 +75,7 @@ export default function OptimizedOfferSection({ answers }) {
   }
 
   const handleCheckoutClick = () => {
-    mixpanelTracker.trackCheckoutClick('planofit_annual', 80.85);
+    mixpanelTracker.trackCheckoutClick('planofit_unique', 97.0);
   }
 
 
@@ -65,25 +89,26 @@ export default function OptimizedOfferSection({ answers }) {
 
         {/* Vídeo HLS Player - MANTIDO */}
         <div className="mb-8 sm:mb-8">
-          <HLSPlayer
-            src="https://video.gumlet.io/667396f5edc68b774a04aebc/688c5a92f20742b35bb3cf1b/main.m3u8"
-            onTimeUpdate={handleTimeUpdate}
-            autoplay={true}
-            className="w-full max-w-3xl mx-auto h-[200px] sm:h-[300px] md:h-[400px] shadow-2xl"
-            onLoadedData={() => console.log('Vídeo carregado')}
-            onEnded={() => console.log('Vídeo terminou')}
-          />
+          <div style={{ position: 'relative', aspectRatio: '16/9' }}>
+            <iframe
+              loading="lazy" title="Gumlet video player"
+              className='rounded-2xl'
+              src="https://play.gumlet.io/embed/68957eedbcf5dc9e17329925?background=false&autoplay=true&loop=false&disableControls=false"
+              style={{ border: 'none', position: 'absolute', top: 0, left: 0, height: '100%', width: '100%' }}
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;">
+            </iframe>
+          </div>
         </div>
 
         {/* Banner discreto logo abaixo do vídeo */}
-        {!hasWatched170Seconds && (
+        {/* {!hasWatched170Seconds && (
           <VideoProcessingBanner 
             answers={answers} 
             currentWatchTime={currentWatchTime} 
           />
-        )}
+        )} */}
 
-        <section id='offer' className={hasWatched170Seconds ? 'block' : 'hidden'}>
+        <section id='offer' className={hasWatched170Seconds ? 'block' : 'block'}>
           {/* Header Principal - MANTIDO */}
           <div className="text-center mb-4 sm:mb-12">
 
@@ -184,55 +209,31 @@ export default function OptimizedOfferSection({ answers }) {
               </div>
             </div>
           </div>
+          <h4 className="text-center text-2xl font-bold mb-4 text-emerald-600">Tudo que <span className="text-orange-500">você precisa...</span></h4>
 
-          {/* DEMONSTRAÇÃO COM PRINTS REAIS (Princípio da Mordomize) */}
-          <FeaturesShowcase />
-
-          <div className="content text break-words py-2 text-center">
-            <h2 className="ql-align-center text-2xl font-bold">
-              <span className="text-gray-500">Ainda tem </span><span
-                className="text-orange-500 font-bold">muito mais...</span></h2></div>
-
-          <div className="bg-green-100 text-green-700 p-3 mb-6 mt-6 rounded-2xl max-w-[333px] mx-auto">
-            <h1 className="text-center">
-
-              <strong className="text-[#16a34a] font-extrabold text-3xl">🎁&nbsp; Bônus inclusos!</strong>
-            </h1>
-            <p className="text-center text-green-700 text-lg mt-2">Para acelerar seus resultados</p>
+          <div style={{ position: 'relative', aspectRatio: '9/11' }} className='mb-2 rounded-2xl max-w-md mx-auto'>
+            <iframe
+              loading="lazy" title="Gumlet video player"
+              className='rounded-2xl'
+              src="https://play.gumlet.io/embed/68958af7aa43dddb5c57ac9c?background=false&autoplay=true&loop=true&disableControls=true"
+              style={{ border: 'none',  position: 'absolute', top: 0, left: 0, height: '100%', width: '100%' }}
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen;">
+            </iframe>
           </div>
 
-          <div className="bg-green-100 rounded-xl  p-3 mb-3 mt-3  max-w-[333px] mx-auto">
-            <p className="text-center text-emerald-800 font-bold text-lg ">Guia Detox Turbo</p>
-            <span className="text-center text-green-700 text-sm w-full block">Desinche já na Primeira Semana</span>
-          </div>
-
-          <div className="bg-green-100 rounded-xl  p-3 mb-3 mt-3  max-w-[333px] mx-auto">
-            <p className="text-center text-emerald-800 font-bold text-lg ">Receitas AirFryer</p>
-            <span className="text-center text-green-700 text-sm w-full block">Para Emagrecer Com Prazer</span>
-          </div>
-
-          <div className="bg-green-100 rounded-xl  p-3 mb-3 mt-3  max-w-[333px] mx-auto">
-            <p className="text-center text-emerald-800 font-bold text-lg ">Biblioteca Premium</p>
-            <span className="text-center text-green-700 text-sm w-full block">Vídeo Aulas completas passo a passo</span>
-          </div>
-
-          <div className="bg-green-100 rounded-xl  p-3 mb-3 mt-3  max-w-[333px] mx-auto">
-            <p className="text-center text-emerald-800 font-bold text-lg ">Chá da Banana</p>
-            <span className="text-center text-green-700 text-sm w-full block">Reduz Ansiedade e Gordura Abdominal</span>
-          </div>
+        
 
           {/* Gráfico de Velocidade Metabólica */}
           <section className="mb-1">
-            <Card className="rounded-2xl border border-gray-200/70 shadow-sm max-w-md mx-auto">
-              <CardHeader className="pb-2">
+            <div className="max-w-md mx-auto no-shadow">
+              <CardHeader className="pb-1">
                 <CardTitle className="text-center">
                   <h3 className="text-2xl font-extrabold text-gray-600">
-                    <span className="text-emerald-600">Acelere</span> seu metabolismo <span className="text-orange-500">em 21 dias</span>
+                    <span className="text-emerald-600">Para acelerar</span> seu metabolismo <span className="text-orange-500">em 21 dias</span>
                   </h3>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="relative h-48">
+              <div className="relative h-48">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
                       data={[
@@ -246,7 +247,7 @@ export default function OptimizedOfferSection({ answers }) {
                         { name: 'p6', value: 85, label: '', x: 7 },
                         { name: 'end', value: 100, label: '3º semana', x: 8 }
                       ]}
-                      margin={{ top: 20, right: 35, left: 0, bottom: 20 }}
+                      margin={{ top: 8, right: 30, left: 30, bottom: 8 }}
                     >
                       <defs>
                         <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
@@ -288,7 +289,7 @@ export default function OptimizedOfferSection({ answers }) {
                   </ResponsiveContainer>
 
                   {/* Marcadores */}
-                  <div className="absolute top-10 left-[45%] -translate-x-1/2">
+                  <div className="absolute top-9 left-[45%] -translate-x-1/2">
                     <div className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow">
                       Início
                     </div>
@@ -298,8 +299,7 @@ export default function OptimizedOfferSection({ answers }) {
                     <div className="w-5 h-5 bg-emerald-500 rounded-full border-2 border-white shadow"></div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+            </div>
           </section>
 
 
@@ -307,25 +307,15 @@ export default function OptimizedOfferSection({ answers }) {
 
 
 
-          <div className="mx-auto max-w-5xl px-4" id="pricing">
-            {/* Header curto + urgência */}
+          <div className="mx-auto max-w-5xl px-4 mb-3" id="pricing">
+            {/* Vaga reservada + contador real */}
             <div className="mb-6 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1 rounded-full bg-orange-600 text-white text-[10px] uppercase tracking-widest font-bold px-2.5 py-1 shadow-sm">
-                  🔥 Oferta Relâmpago
-                </span>
-                <span className="text-[12px] text-black/70">
-                  Termina hoje {new Date().toLocaleDateString()}
-                </span>
+              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 text-emerald-700 px-3 py-1.5 text-xs font-semibold">
+                ✅ Sua vaga foi reservada
               </div>
-
-              <div className="hidden md:flex items-center gap-3 text-[11px] text-black/70">
-                <div className="inline-flex items-center gap-1 rounded-md bg-black/5 px-2 py-1">
-                  💳 Visa • Mastercard • Pix
-                </div>
-                <div className="inline-flex items-center gap-1 rounded-md bg-black/5 px-2 py-1">
-                  🛡️ Garantia 7 dias
-                </div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-red-50 text-red-700 px-3 py-1.5 text-sm font-bold">
+                <Clock className="w-4 h-4" />
+                {formatTime(timeLeftMs)}
               </div>
             </div>
 
@@ -364,71 +354,33 @@ export default function OptimizedOfferSection({ answers }) {
 
               </div>
 
-              {/* Cards de preço */}
-              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Trimestral */}
-                <div className="group relative rounded-2xl border border-black/5 bg-white/70 backdrop-blur-sm p-5 hover:-translate-y-0.5 transition-all duration-300 hover:shadow-xl">
-
-
+              {/* Oferta única */}
+              <div className="mt-6">
+                <div className="group relative rounded-2xl border border-emerald-500/30 bg-white/80 backdrop-blur-sm p-6 ring-2 ring-emerald-500/20 hover:-translate-y-0.5 transition-all duration-300 shadow-xl">
+                  
                   <div className="mb-3">
-                    <h4 className="text-lg font-extrabold text-gray-700">Trimestral</h4>
-                    <p className="text-[12px] text-black/60">Acesso por 3 meses</p>
+                    <h4 className="text-lg font-extrabold text-gray-700">Acesso por 6 meses</h4>
                   </div>
 
-                  <div className="flex items-end gap-2">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-extrabold text-gray-700 tracking-tight">R$ 49,90</span>
+                  <div className="flex flex-col">
+                    <div className="flex items-end gap-2">
+                      <span className="text-4xl font-extrabold text-gray-800 tracking-tight">R$ 97</span>
+                      <span className="text-sm text-black/60">à vista</span>
+                    </div>
+                    <div className="mt-1">
+                      <span className="bg-orange-100 text-orange-600 text-xs font-semibold px-2 py-1 rounded-full">
+                        0,53 centavos / dia
+                      </span>
                     </div>
                   </div>
 
                   <a
-                    href="https://pay.kiwify.com.br/X8sTddA"
+                    href={checkoutUrl}
                     target="_blank"
-                    className="mt-4 block text-center w-full rounded-xl pulse-animation
-        bg-gradient-to-r from-emerald-600 to-green-600
-         text-white font-bold py-3
-          shadow-lg shadow-emerald-600/30
-           hover:from-emerald-600 hover:to-green-600
-            active:scale-[0.99] transition-all"
+                    onClick={handleCheckoutClick}
+                    className="mt-4 block text-center w-full rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold py-3 shadow-lg shadow-emerald-600/30 hover:from-emerald-600 hover:to-green-600 active:scale-[0.99] transition-all"
                   >
-                    Garantir 3 meses
-                  </a>
-
-                  <div className="mt-3 flex items-center justify-center gap-2 text-[11px] text-black/60">
-                    <span className="inline-flex items-center gap-1">🔒 Pagamento seguro</span>
-                    <span className="h-1 w-1 rounded-full bg-black/20"></span>
-                    <span>Acesso imediato</span>
-                  </div>
-                </div>
-
-                {/* Semestral - Destaque sutil */}
-                <div className="group relative rounded-2xl order-0 border border-emerald-500/20 bg-green-50/80 backdrop-blur-sm p-5 ring-2 ring-emerald-500/20 hover:shadow-emerald-500/20 hover:-translate-y-1 transition-all duration-300 hover:shadow-2xl">
-                  <div className="absolute -right-2 -top-3">
-                    <span className="inline-flex items-center rounded-full bg-emerald-600 text-white text-[10px] uppercase tracking-widest px-2 py-1">Mais vantajoso</span>
-                  </div>
-
-                  <div className="mb-3">
-                    <h4 className="text-lg font-extrabold text-gray-700"> Semestral</h4>
-                    <p className="text-[16px] text-black/60">Acesso por 6 meses</p>
-                  </div>
-
-                  <div className="flex items-end gap-2">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-red-400 line-through text-sm">R$ 119,90</span>
-                      <span className="text-3xl font-extrabold text-gray-700 tracking-tight">R$ 67,90</span>
-                    </div>
-                  </div>
-                  <p className="text-[13px] font-semibold mt-1 text-emerald-900">Melhor custo por mês</p>
-
-                  <a
-                    href="https://pay.kiwify.com.br/1nfKg8z"
-                    target="_blank"
-
-                    className="mt-4 block pulse-animation text-center w-full rounded-xl bg-gradient-to-r
-         from-emerald-600 to-green-600 text-white 
-         font-bold py-3 shadow-lg shadow-emerald-600/30 hover:from-emerald-600 hover:to-green-600 active:scale-[0.99] transition-all"
-                  >
-                    Garantir 6 meses
+                    Aproveitar agora
                   </a>
 
                   <div className="mt-3 flex items-center justify-center gap-2 text-[11px] text-black/60">
@@ -443,11 +395,9 @@ export default function OptimizedOfferSection({ answers }) {
               <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
 
                 <div className="rounded-xl bg-black/5 p-3 text-center">
-                  <p className="text-[12px] text-black/70">Sem mensalidades recorrentes</p>
+                  <p className="text-[12px] text-black/70 font-bold">Sem mensalidade!</p>
                 </div>
-                <div className="rounded-xl bg-black/5 p-3 text-center">
-                  <p className="text-[12px] text-black/70">Suporte prioritário</p>
-                </div>
+               
               </div>
 
               <div className="mt-3 flex items-center justify-center gap-3 md:hidden">
@@ -462,6 +412,45 @@ export default function OptimizedOfferSection({ answers }) {
               <div className="pointer-events-none absolute -bottom-12 -right-10 h-40 w-40 rounded-full bg-orange-200/40 blur-3xl"></div>
             </div>
           </div>
+
+          <section id="bonus">
+          <div className="content text break-words py-2 text-center">
+            <h2 className="ql-align-center text-2xl font-bold">
+              <span className="text-gray-500">Ainda tem </span><span
+                className="text-orange-500 font-bold">muito mais...</span></h2></div>
+
+          <div className="bg-green-100 text-green-700 p-3 mb-6 mt-6 rounded-2xl max-w-[333px] mx-auto">
+            <h1 className="text-center">
+
+              <strong className="text-[#16a34a] font-extrabold text-3xl">🎁&nbsp; Bônus inclusos!</strong>
+            </h1>
+            <p className="text-center text-green-700 text-lg mt-2">Para acelerar seus resultados</p>
+          </div>
+
+          <div className="bg-green-100 rounded-xl  p-2 mb-3 mt-3  max-w-[333px] mx-auto">
+            <p className="text-center text-emerald-800 font-bold text-lg ">Guia Detox Turbo</p>
+            <span className="text-center text-green-700 text-sm w-full block">Desinche já na Primeira Semana</span>
+          </div>
+
+          <div className="bg-green-100 rounded-xl  p-3 mb-3 mt-3  max-w-[333px] mx-auto">
+            <p className="text-center text-emerald-800 font-bold text-lg ">Receitas AirFryer</p>
+            <span className="text-center text-green-700 text-sm w-full block">Para Emagrecer Com Prazer</span>
+          </div>
+
+          <div className="bg-green-100 rounded-xl  p-3 mb-3 mt-3  max-w-[333px] mx-auto">
+            <p className="text-center text-emerald-800 font-bold text-lg ">Biblioteca Premium</p>
+            <span className="text-center text-green-700 text-sm w-full block">Vídeo Aulas completas passo a passo</span>
+          </div>
+
+          <div className="bg-green-100 rounded-xl  p-3 mb-3 mt-3  max-w-[333px] mx-auto">
+            <p className="text-center text-emerald-800 font-bold text-lg ">Chá da Banana</p>
+            <span className="text-center text-green-700 text-sm w-full block">Reduz Ansiedade e Gordura Abdominal</span>
+          </div>
+          </section>
+
+
+          <FeaturesShowcase />
+
         </section>
 
       </div>
